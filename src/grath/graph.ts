@@ -3,16 +3,9 @@ import { GrathNode } from "./node";
 
 export class Graph<T> {
   nodes: Map<T, GrathNode<T>> = new Map();
-  comparator: (a: T, b: T) => boolean;
-  flights: { [key: string]: string }[];
+  edges: Map<T, Map<T, number>> = new Map();
 
-  constructor(
-    comparator: (a: T, b: T) => boolean,
-    flights: { [key: string]: string }[]
-  ) {
-    this.comparator = comparator;
-    this.flights = flights;
-  }
+  constructor(private comparator: (a: T, b: T) => boolean) {}
 
   addNode(data: T): GrathNode<T> {
     let node = this.nodes.get(data);
@@ -39,113 +32,63 @@ export class Graph<T> {
     return nodeToRemove;
   }
 
-  addEdge(source: T, destination: T): void {
+  addEdge(source: T, destination: T, weight = 0): void {
     const sourceNode = this.addNode(source);
     const destinationNode = this.addNode(destination);
 
-    sourceNode.addAdjacent(destinationNode);
-  }
+    sourceNode.addAdjacent(destinationNode, weight);
 
-  removeEdge(source: T, destination: T): void {
-    const sourceNode = this.nodes.get(source);
-    const destinationNode = this.nodes.get(destination);
-
-    if (sourceNode && destinationNode) {
-      sourceNode.removeAdjacent(destination);
+    if (!this.edges.has(source)) {
+      this.edges.set(source, new Map());
     }
+
+    this.edges.get(source)!.set(destination, weight);
   }
 
-  /**
-   * Depth-first search
-   *
-   * @param {T} data
-   * @param {Map<T, boolean>} visited
-   * @returns
-   */
-  private depthFirstSearchAux(
-    node: GrathNode<T>,
-    visited: Map<T, boolean>
-  ): void {
-    if (!node) return;
-
-    visited.set(node.data, true);
-
-    console.log(node.data);
-
-    node.adjacent.forEach((item) => {
-      if (!visited.has(item.data)) {
-        this.depthFirstSearchAux(item, visited);
-      }
-    });
-  }
-
-  depthFirstSearch() {
-    const visited: Map<T, boolean> = new Map();
-    this.nodes.forEach((node) => {
-      if (!visited.has(node.data)) {
-        this.depthFirstSearchAux(node, visited);
-      }
-    });
-  }
-
-  private breadthFirstSearchPathAux(
+  breadthFirstSearchPath(
     source: GrathNode<T>,
     destination: GrathNode<T>,
-    visited: Map<T, boolean>
-  ): void {
-    const queue: Queue<GrathNode<T>> = new Queue();
-    const pathMap: Map<T, T | null> = new Map();
+    countRoutes = 1
+  ): { path: T[]; weight: number }[] {
+    const visited: Map<GrathNode<T>, boolean> = new Map();
+    const paths: { path: T[]; weight: number }[] = [];
+    const queue: Queue<{ node: GrathNode<T>; path: any[]; weight: number }> =
+      new Queue();
 
-    if (!source) return;
+    if (!source || !destination) {
+      return paths;
+    }
 
-    queue.add(source);
-    visited.set(source.data, true);
+    queue.add({
+      node: source,
+      path: [source.data],
+      weight: 0,
+    });
+
+    visited.set(source, true);
 
     while (!queue.isEmpty()) {
-      const currentNode = queue.dequeue();
+      const { node, path, weight } = queue.dequeue();
 
-      if (currentNode.data === destination.data) {
-        //caminho encontrado
+      if (node.data === destination.data) {
+        paths.push({ path, weight });
 
-        const path: T[] = [];
-        let current = destination.data;
-        while (current !== source.data) {
-          // procurar voo
-
-          path.unshift(current);
-          current = pathMap.get(current)!;
-        }
-        path.unshift(source.data);
-
-        const res = [];
-
-        path.reduce((prev, cur) => {
-          const flight = this.flights.filter(
-            (f) => f.origin === prev && f.destination === cur
-          );
-
-          if (flight?.length > 0) res.push(flight);
-
-          return cur;
-        });
-
-        console.log("Caminho encontrado:", path.join(" -> "));
-        return;
+        if (paths.length === countRoutes) return paths;
+        continue;
       }
 
-      currentNode.adjacent.forEach((item) => {
-        if (!visited.has(item.data)) {
-          visited.set(item.data, true);
-          queue.add(item);
-          pathMap.set(item.data, currentNode.data); // Para reconstruir o caminho
+      for (const adjacentNode of node.adjacent) {
+        if (!visited.has(adjacentNode) || adjacentNode === destination) {
+          visited.set(adjacentNode, true);
+          const edgeWeight = node.weights.get(adjacentNode) || 0;
+          const newPath = [...path, adjacentNode.data];
+          const newWeight = weight + edgeWeight;
+
+          queue.add({ node: adjacentNode, path: newPath, weight: newWeight });
         }
-      });
+      }
     }
-  }
 
-  breadthFirstSearchPath(source: GrathNode<T>, destination: GrathNode<T>) {
-    const visited: Map<T, boolean> = new Map();
-
-    this.breadthFirstSearchPathAux(source, destination, visited);
+    return paths;
   }
 }

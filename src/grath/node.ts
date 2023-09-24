@@ -1,16 +1,15 @@
 export class GrathNode<T> {
-  data: T;
   adjacent: GrathNode<T>[];
-  comparator: (a: T, b: T) => boolean;
+  weights: Map<GrathNode<T>, number>;
 
-  constructor(data: T, comparator: (a: T, b: T) => boolean) {
-    this.data = data;
+  constructor(public data: T, private comparator: (a: T, b: T) => boolean) {
     this.adjacent = [];
-    this.comparator = comparator;
+    this.weights = new Map();
   }
 
-  addAdjacent(node: GrathNode<T>): void {
+  addAdjacent(node: GrathNode<T>, weight: number): void {
     this.adjacent.push(node);
+    this.weights.set(node, weight);
   }
 
   removeAdjacent(data: T): GrathNode<T> | null {
@@ -19,7 +18,9 @@ export class GrathNode<T> {
     );
 
     if (index > -1) {
-      return this.adjacent.splice(index, 1)[0];
+      const removed = this.adjacent.splice(index, 1)[0];
+      this.weights.delete(removed);
+      return removed;
     }
 
     return null;

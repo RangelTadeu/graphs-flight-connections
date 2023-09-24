@@ -6,6 +6,7 @@ type Airport = {
   city: string;
   country: string;
   iata: string;
+  flights?: Flight[];
 };
 
 const airports: Airport[] = [
@@ -81,33 +82,30 @@ const flights: Flight[] = [
     departureTime: "2017-06-01T21:21:17.306Z",
     arrivalTime: "2017-06-02T03:21:17.306Z",
     carrier: "FR",
-    origin: "SJC",
+    origin: "BUR",
     destination: "DEN",
   },
   {
     departureTime: "2017-06-01T21:21:17.291Z",
     arrivalTime: "2017-06-02T14:21:17.291Z",
     carrier: "SW",
-    origin: "SFO",
-    destination: "DEN",
+    origin: "DEN",
+    destination: "AUS",
   },
 ];
 
-// Função de comparação
 function comparator(a: string, b: string) {
-  // if (a < b) return -1;
-  // if (a > b) return 1;
   return a === b;
 }
 
-const graph = new Graph<string>(comparator, flights);
+const graph = new Graph<string>(comparator);
 
 const nodes = airports.map((a) => ({
   name: a.iata,
   node: graph.addNode(a.iata),
 }));
 
-flights.forEach((f) => graph.addEdge(f.origin, f.destination));
+flights.forEach((f) => graph.addEdge(f.origin, f.destination, 1));
 
 const node1 = nodes.find((n) => n.name === "SJC").node;
 
@@ -115,6 +113,6 @@ const node2 = nodes.find((n) => n.name === "AUS").node;
 
 // JSC => AUS
 console.log("BFS:");
-graph.breadthFirstSearchPath(node1, node2);
+const res = graph.breadthFirstSearchPath(node1, node2, 10);
 
-console.log("test");
+console.log(res);
