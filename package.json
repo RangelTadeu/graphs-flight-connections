@@ -4,10 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/main.js",
+    "start": "ts-node-dev dist/main.js",
     "build": "tsc"
   },
   "devDependencies": {
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "haversine": "^1.1.1"
   }
 }
