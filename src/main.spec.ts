@@ -7,9 +7,7 @@ import { getAiportsDistance } from "./utils/get-distance-airports";
 describe("Using graphs to find flight connections and departures", () => {
   let graph;
   let nodes;
-  const comparator = (a: string, b: string) => {
-    return a === b;
-  };
+  const comparator = (a: string, b: string) => a === b;
 
   beforeEach(() => {
     graph = new FlightGraph<string>(comparator);
