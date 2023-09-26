@@ -32,7 +32,7 @@ export class FlightGraph<T> {
     return nodeToRemove;
   }
 
-  addEdge(source: T, destination: T, distance = 0, departure): void {
+  addEdge(source: T, destination: T, distance = 0, departure: string): void {
     const sourceNode = this.addNode(source);
     const destinationNode = this.addNode(destination);
 

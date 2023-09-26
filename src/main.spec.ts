@@ -23,7 +23,11 @@ describe("Using graphs to find flight connections and departures", () => {
       graph.addEdge(
         f.origin,
         f.destination,
-        getAiportsDistance(f.origin, f.destination),
+        getAiportsDistance({
+          source: f.origin,
+          destination: f.destination,
+          unit: "mile",
+        }),
         f.departureTime
       )
     );
@@ -49,7 +53,11 @@ describe("Using graphs to find flight connections and departures", () => {
       graph.addEdge(
         f.origin,
         f.destination,
-        getAiportsDistance(f.origin, f.destination),
+        getAiportsDistance({
+          source: f.origin,
+          destination: f.destination,
+          unit: "mile",
+        }),
         f.departureTime
       )
     );
@@ -69,7 +77,11 @@ describe("Using graphs to find flight connections and departures", () => {
       graph.addEdge(
         f.origin,
         f.destination,
-        getAiportsDistance(f.origin, f.destination),
+        getAiportsDistance({
+          source: f.origin,
+          destination: f.destination,
+          unit: "mile",
+        }),
         f.departureTime
       )
     );
@@ -90,7 +102,11 @@ describe("Using graphs to find flight connections and departures", () => {
       graph.addEdge(
         f.origin,
         f.destination,
-        getAiportsDistance(f.origin, f.destination),
+        getAiportsDistance({
+          source: f.origin,
+          destination: f.destination,
+          unit: "mile",
+        }),
         f.departureTime
       )
     );

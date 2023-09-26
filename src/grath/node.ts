@@ -9,7 +9,11 @@ export class FlightGrathNode<T> {
     this.departures = new Map();
   }
 
-  addAdjacent(node: FlightGrathNode<T>, weight: number, departureTime): void {
+  addAdjacent(
+    node: FlightGrathNode<T>,
+    weight: number,
+    departureTime: string
+  ): void {
     if (!this.adjacent.find((n) => n.data === node.data)) {
       this.adjacent.push(node);
     }

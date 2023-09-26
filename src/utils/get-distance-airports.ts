@@ -1,7 +1,13 @@
 import haversine from "haversine";
 import { airports } from "../data/airports";
 
-export const getAiportsDistance = (source, destination, unit = "mile") => {
+interface AirportProps {
+  source: string;
+  destination: string;
+  unit?: "km" | "mile" | "meter" | "nmi";
+}
+
+export const getAiportsDistance = (props: AirportProps) => {
   const getLatLon = (airport) => {
     const { latitude, longitude } = airport;
 
@@ -9,9 +15,9 @@ export const getAiportsDistance = (source, destination, unit = "mile") => {
   };
 
   const res = haversine(
-    getLatLon(airports.find((a) => a.iata === source)),
-    getLatLon(airports.find((a) => a.iata === destination)),
-    { unit }
+    getLatLon(airports.find((a) => a.iata === props.source)),
+    getLatLon(airports.find((a) => a.iata === props.destination)),
+    { unit: props.unit }
   );
 
   return res;

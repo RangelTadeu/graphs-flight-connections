@@ -18,7 +18,11 @@ flights.forEach((f) =>
   graph.addEdge(
     f.origin,
     f.destination,
-    getAiportsDistance(f.origin, f.destination),
+    getAiportsDistance({
+      source: f.origin,
+      destination: f.destination,
+      unit: "mile",
+    }),
     f.departureTime
   )
 );
