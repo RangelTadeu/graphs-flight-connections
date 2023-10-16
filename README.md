@@ -69,7 +69,7 @@ The graph for flights.test-case-1.ts should look like this:
 ### Finding Paths
 
 ```javascript
-const GRU = nodes find((n) => n.name === "GRU").node;
+const GRU = nodes.find((n) => n.name === "GRU").node;
 const YVR = nodes.find((n) => n.name === "YVR").node;
 
 const paths = graph.breadthFirstSearchPath(GRU, YVR, 10);
